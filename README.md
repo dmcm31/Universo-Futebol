@@ -20,6 +20,15 @@ git push -u origin main
 ```
 Depois de cada edição, suba de novo (pelo site ou com `git add . && git commit -m "..." && git push`). O GitHub Pages atualiza sozinho.
 
+## Valor de mercado
+A coluna de valor de mercado da planilha está quebrada (`#REF!`), então o jogo calcula o valor: cresce rápido com o overall, depende da idade (jovens valem mais) e da posição. A fórmula está em `js/config.js` (`valorMercado`). No Editor → Jogadores você pode fixar o valor de um jogador (coluna "Valor").
+
+## Fases dos jogadores, formação principal e substituições
+- **Fase:** ↑ vermelha = boa fase · ↓ azul = má fase · ← verde = fora de ritmo (3 jogos ou mais sem jogar) · → verde = regular. Cada jogador é *oscilante* (alterna entre as fases) ou *consistente* (nunca entra em má fase). A fase muda a cada jogo, e gols e assistências ajudam a entrar em boa fase.
+- **Formação principal:** cada clube tem uma formação e 11 titulares definidos (Editor → Formação principal). Antes de cada jogo, se um titular está em má fase ou fora de ritmo, ele pode ser trocado por um reserva melhor da mesma posição.
+- **Substituições:** todo time faz as 3 substituições em todo jogo (lesões contam como uma delas).
+- **Cor secundária:** cada clube tem duas cores (Editor → Clubes).
+
 ## Editor dentro do jogo (sem mexer em código)
 No topo do jogo, clique em **✏️ Editor**:
 - **Clubes:** nome, cor, estádio e técnico.

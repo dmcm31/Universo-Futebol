@@ -8,7 +8,7 @@ const LGC={ING:'#BF9000',ITA:'#1155CC'};
 const LG={ING:'Golden League Vision (Inglaterra)',ITA:'Superlegea Calcio (Itália)'};
 let S=null,nav={p:'home'},H=[],timer=null;
 const cl=n=>S.clubs.find(c=>c.n==n),ci=n=>S.clubs.findIndex(c=>c.n==n);
-const load=()=>{try{const j=localStorage.getItem('fut3536e');return j?JSON.parse(j):null}catch(e){return null}};
+const load=()=>{try{const j=localStorage.getItem('fut3536f');return j?JSON.parse(j):null}catch(e){return null}};
 const save=()=>{try{localStorage.setItem('fut3536d',JSON.stringify(S))}catch(e){}};
 
 // BANDEIRAS: nome do país (como está em data/jogadores.js) -> código do site flagcdn.com
@@ -16,3 +16,10 @@ const ISO={"ITÁLIA": "it", "INGLATERRA": "gb-eng", "FRANÇA": "fr", "ESPANHA": 
 const flag=p=>{const c=ISO[(p||'').toUpperCase()];return c?`<img class=fl src="https://flagcdn.com/w20/${c}.png" alt="" loading=lazy onerror="this.style.display='none'">`:''};
 // CAMPO: quantos jogadores por linha (goleiro, defesa, meio, ataque) em cada formação
 const LAYOUT={'4-3-3':[1,4,3,3],'3-4-3':[1,3,4,3],'4-4-2':[1,4,4,2],'4-5-1':[1,4,5,1],'5-4-1':[1,5,4,1]};
+
+const COLS2=typeof COL2!=='undefined'?COL2:{};
+
+// VALOR DE MERCADO (em milhões de euros). Fórmula: cresce rápido com o overall, depende da idade e da posição.
+// Um jogador pode ter valor fixo definido no Editor (campo "Valor"); nesse caso a fórmula é ignorada.
+function valorMercado(p){if(p.vm!=null)return p.vm;const a=p.age,v0=Math.exp(.16*(p.ovr-62)),fa=a<=21?1.5:a<=24?1.25:a<=28?1:a<=31?.7:a<=34?.4:.2,fp=p.pos=='GK'?.8:['ATA','PE','PD','SA'].includes(p.pos)?1.15:p.pos.indexOf('ZG')==0?.95:1;return Math.max(.05,v0*fa*fp)}
+const fmtV=v=>v<1?'€'+Math.round(v*100)*10+' mil':'€'+String(v<10?v.toFixed(1):v<100?(Math.round(v*2)/2).toFixed(1):Math.round(v)).replace('.',',').replace(/,0$/,'')+'M';
