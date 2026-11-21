@@ -24,7 +24,8 @@ Depois de cada edição, suba de novo (pelo site ou com `git add . && git commit
 | Quero mudar | Arquivo |
 |---|---|
 | Fontes (texto e títulos), cores gerais, claro/escuro, layout | `css/style.css` (variáveis `--fonte`, `--fonte-titulo`, `--ac`... no começo) |
-| Cor de cada clube (escudo, banner, barras) | `data/clubes.js` |
+| Cor de cada clube (escudo, banner, barras) e estádio de cada clube | `data/clubes.js` (`COL` e `EST`) |
+| Bandeiras (país → código) e posição dos jogadores no campo | `js/config.js` (`ISO` e `LAYOUT`) |
 | Cor de cada liga e nomes das ligas | `js/config.js` (`LGC` e `LG`) |
 | Incluir, editar ou tirar jogadores, técnicos e clubes | `data/jogadores.js` |
 | Formações e posições | `js/config.js` (`FORM`, `CP`) e `js/engine.js` (`lineup`) |

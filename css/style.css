@@ -20,3 +20,11 @@ button{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(
 .chip{display:inline-block;min-width:26px;text-align:center;border-radius:6px;padding:1px 7px;font-weight:700}.cy{background:#ffd60a;color:#111}.cr{background:#e5322d;color:#fff}.yg{background:#1a9f6538;color:#1a9f65}.vt{background:#e0861f38;color:#e0861f}
 .hb{position:relative}.hb i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;opacity:.3}.hb span{position:relative}.ev.g{background:#1a9f6516;border-radius:6px}.sc .tl{color:#fff}tr:hover td{background:#8881}
 .m span:nth-of-type(2){flex:1}.m button{padding:3px 10px;font-size:13px}
+
+.mgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;align-items:start}@media(max-width:860px){.mgrid{grid-template-columns:1fr}}
+.pitch{position:relative;aspect-ratio:1/1.75;border-radius:12px;margin-top:8px;background:repeating-linear-gradient(0deg,#2e8b4f 0 10%,#359157 10% 20%);border:2px solid #fff8;overflow:hidden}
+.pitch:before{content:"";position:absolute;left:0;right:0;top:50%;border-top:2px solid #fff8}.pitch:after{content:"";position:absolute;left:50%;top:50%;width:70px;height:70px;border:2px solid #fff8;border-radius:50%;transform:translate(-50%,-50%)}
+.pl{position:absolute;transform:translate(-50%,-50%);width:64px;text-align:center;line-height:1.1;z-index:1}.pn{display:inline-flex;width:28px;height:28px;border-radius:50%;align-items:center;justify-content:center;font-size:12px;font-weight:700;box-shadow:0 0 0 2px #fff}
+.nm{display:block;color:#fff;font-size:10px;font-weight:700;text-shadow:0 1px 2px #000;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ic{display:block;font-size:10px;color:#fff;min-height:12px;text-shadow:0 1px 2px #000}
+.bench{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid var(--bd);font-size:13px}.bench .pn{width:22px;height:22px;font-size:10px;box-shadow:0 0 0 1px #8886}
+.fl{height:13px;width:19px;vertical-align:-2px;margin-right:6px;border-radius:2px;box-shadow:0 0 0 1px #8884}
