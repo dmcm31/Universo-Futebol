@@ -20,7 +20,16 @@ git push -u origin main
 ```
 Depois de cada edição, suba de novo (pelo site ou com `git add . && git commit -m "..." && git push`). O GitHub Pages atualiza sozinho.
 
-## Onde mexer em cada coisa
+## Editor dentro do jogo (sem mexer em código)
+No topo do jogo, clique em **✏️ Editor**:
+- **Clubes:** nome, cor, estádio e técnico.
+- **Jogadores:** editar posição, número, nome, país, idade e geral; incluir novo jogador; dispensar.
+- **Aparência:** fonte do texto, fonte dos títulos, cor de destaque e cor do cabeçalho.
+- **Exportar:** baixa `jogadores.js` e `clubes.js` prontos para colocar na pasta `data/` do repositório e tornar as edições permanentes.
+
+As edições ficam salvas no navegador. Sem exportar e subir os arquivos, elas não aparecem em outros aparelhos.
+
+## Onde mexer em cada coisa (editando os arquivos)
 | Quero mudar | Arquivo |
 |---|---|
 | Fontes (texto e títulos), cores gerais, claro/escuro, layout | `css/style.css` (variáveis `--fonte`, `--fonte-titulo`, `--ac`... no começo) |

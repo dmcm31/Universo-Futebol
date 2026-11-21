@@ -28,3 +28,4 @@ button{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(
 .nm{display:block;color:#fff;font-size:10px;font-weight:700;text-shadow:0 1px 2px #000;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ic{display:block;font-size:10px;color:#fff;min-height:12px;text-shadow:0 1px 2px #000}
 .bench{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid var(--bd);font-size:13px}.bench .pn{width:22px;height:22px;font-size:10px;box-shadow:0 0 0 1px #8886}
 .fl{height:13px;width:19px;vertical-align:-2px;margin-right:6px;border-radius:2px;box-shadow:0 0 0 1px #8884}
+input,select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:5px 8px;max-width:100%}input[type=color]{padding:0;width:46px;height:32px;cursor:pointer}td input{min-width:120px}td input[type=number]{min-width:0}

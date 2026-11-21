@@ -1,7 +1,7 @@
 // MOTOR DE SIMULAÇÃO: escalação, formações, partida minuto a minuto, calendário.
-function auto(c,f){const u=new Set(),o=[];FORM[f].forEach(s=>{let b=null,bs=-1;c.pl.forEach(p=>{if(u.has(p)||p.sus||p.inj)return;const k=CP[s].indexOf(p.pos);if(k<0)return;const v=p.ovr-k*3;if(v>bs){bs=v;b=p}});
- if(!b)c.pl.forEach(p=>{if(!u.has(p)&&!p.sus&&!p.inj&&p.pos!='GK'&&G(p.pos)==G(s)&&p.ovr>bs){bs=p.ovr;b=p}});if(b){u.add(b);o.push(b)}});return o}
-const pw=c=>c.pl.map(p=>p.ovr).sort((a,b)=>b-a).slice(0,14).reduce((s,x)=>s+x,0)/14,top3=(c,g)=>{const x=c.pl.filter(p=>G(p.pos)==g).map(p=>p.ovr).sort((a,b)=>b-a).slice(0,3);return x.reduce((s,v)=>s+v,0)/(x.length||1)};
+function auto(c,f){const u=new Set(),o=[];FORM[f].forEach(s=>{let b=null,bs=-1;c.pl.forEach(p=>{if(u.has(p)||p.sus||p.inj||p.del)return;const k=CP[s].indexOf(p.pos);if(k<0)return;const v=p.ovr-k*3;if(v>bs){bs=v;b=p}});
+ if(!b)c.pl.forEach(p=>{if(!u.has(p)&&!p.sus&&!p.inj&&!p.del&&p.pos!='GK'&&G(p.pos)==G(s)&&p.ovr>bs){bs=p.ovr;b=p}});if(b){u.add(b);o.push(b)}});return o}
+const pw=c=>c.pl.filter(p=>!p.del).map(p=>p.ovr).sort((a,b)=>b-a).slice(0,14).reduce((s,x)=>s+x,0)/14,top3=(c,g)=>{const x=c.pl.filter(p=>!p.del&&G(p.pos)==g).map(p=>p.ovr).sort((a,b)=>b-a).slice(0,3);return x.reduce((s,v)=>s+v,0)/(x.length||1)};
 function lineup(c,o){const d=o?pw(c)-pw(o):0,W=d>=3?{'4-3-3':70,'3-4-3':15,'4-4-2':15}:d<=-3?{'4-3-3':25,'4-4-2':30,'4-5-1':20,'5-4-1':25}:{'4-3-3':55,'4-4-2':25,'3-4-3':5,'4-5-1':10,'5-4-1':5};
  if(top3(c,'A')<top3(c,'M')-4){delete W['4-3-3'];delete W['3-4-3']}c.cf=wpick(Object.keys(W),k=>W[k]);return auto(c,c.cf)}
 const avg=(l,g)=>{const x=l.filter(p=>G(p.pos)==g);return x.length?x.reduce((s,p)=>s+p.ovr,0)/x.length:50};
@@ -27,7 +27,7 @@ function sim(H,A){
    else add(t,pick([`${n} arrisca de longe e a bola passa perto do gol.`,`${n} cabeceia para fora.`,`${n} finaliza, mas a zaga bloqueia.`,`${n} chuta por cima do travessão.`]),'',s)}
   if(Math.random()<.04){const i=Math.random()<.5?0:1;card(t,i,wpick(L[i],p=>({G:.1,D:1.3,M:1.2,A:.8}[G(p.pos)]*(yel.get(p)?.2:1))),0)}
   if(Math.random()<.0005){const i=Math.random()<.5?0:1;card(t,i,wpick(L[i],p=>({G:.2,D:1.3,M:1,A:.7}[G(p.pos)])),1)}
-  const sw=(i,t,p,w)=>{const b=C[i].pl.filter(x=>!used.has(x)&&!x.sus&&!x.inj&&G(x.pos)==G(p.pos)).sort((a,b)=>b.ovr-a.ovr)[0];if(!b)return false;used.add(b);M(b).in=t;M(p).out=t;L[i]=L[i].map(x=>x==p?b:x);add(t,`🔁 ${C[i].n}: sai ${sn(p)}, entra ${sn(b)}${w?' (lesão)':''}.`,'',i);return true};
+  const sw=(i,t,p,w)=>{const b=C[i].pl.filter(x=>!used.has(x)&&!x.sus&&!x.inj&&!x.del&&G(x.pos)==G(p.pos)).sort((a,b)=>b.ovr-a.ovr)[0];if(!b)return false;used.add(b);M(b).in=t;M(p).out=t;L[i]=L[i].map(x=>x==p?b:x);add(t,`🔁 ${C[i].n}: sai ${sn(p)}, entra ${sn(b)}${w?' (lesão)':''}.`,'',i);return true};
   if(t==62||t==72||t==80)[0,1].forEach(i=>{const p=pick(L[i].filter(x=>G(x.pos)!='G'));if(p&&Math.random()<.8)sw(i,t,p,0)});
   if(Math.random()<.0008){const i=Math.random()<.5?0:1,p=pick(L[i].filter(x=>G(x.pos)!='G'));if(p){hurt.push(p);M(p).i=1;M(p).out=t;add(t,`🚑 ${sn(p)} (${C[i].n}) sente e precisa sair, lesionado.`,'c',i);if(!sw(i,t,p,1))L[i]=L[i].filter(x=>x!=p)}}
   if(t==45)add(45,`Intervalo: ${C[0].n} ${sc[0]} x ${sc[1]} ${C[1].n}`,'i');
