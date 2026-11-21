@@ -4,13 +4,17 @@ function auto(c,f){const u=new Set(),o=[];FORM[f].forEach(s=>{let b=null,bs=-1;c
 const pw=c=>c.pl.filter(p=>!p.del).map(p=>p.ovr).sort((a,b)=>b-a).slice(0,14).reduce((s,x)=>s+x,0)/14,top3=(c,g)=>{const x=c.pl.filter(p=>!p.del&&G(p.pos)==g).map(p=>p.ovr).sort((a,b)=>b-a).slice(0,3);return x.reduce((s,v)=>s+v,0)/(x.length||1)};
 const FM={B:3,N:0,R:-3,F:-2},eff=p=>p.ovr+(FM[p.fase]||0);
 const pickF=c=>{const W={'4-3-3':55,'4-4-2':25,'3-4-3':5,'4-5-1':10,'5-4-1':5};if(top3(c,'A')<top3(c,'M')-4){delete W['4-3-3'];delete W['3-4-3']}return wpick(Object.keys(W),k=>W[k])};
-const mkMain=(c,f)=>({f,xi:auto(c,f).map(p=>c.pl.indexOf(p))});
-function fit(c,f,base){const ok=p=>p&&!p.sus&&!p.inj&&!p.del,u=new Set(),inX=new Set(base.filter(Boolean)),o=[];
+const ORD=(p,z)=>({GK:0,LD:z?20:10,ZGD:11,ZGE:12,LE:z?24:13,VOL:21,MC:22,MEIA:23,PD:30,ATA:31,SA:32,PE:33}[p]);
+const nZ=pos=>pos.filter(p=>p[0]=='Z').length==3&&pos.filter(p=>p=='VOL'||p=='MC'||p=='MEIA').length<=3;
+function labelOf(pos){const z=nZ(pos);let d=0,m=0,a=0;pos.forEach(p=>{if(p=='GK')return;if(p[0]=='Z')d++;else if(p=='LD'||p=='LE')z?m++:d++;else if(p=='VOL'||p=='MC'||p=='MEIA')m++;else a++});return d+'-'+m+'-'+a}
+const mkMain=(c,f)=>({f,pos:FORM[f].slice(),xi:auto(c,f).map(p=>c.pl.indexOf(p))});
+function fixMain(c){const m=c.main,u=new Set(m.xi.filter(k=>c.pl[k]&&!c.pl[k].del));m.xi=m.xi.map((k,i)=>{if(c.pl[k]&&!c.pl[k].del)return k;let b=-1,bs=-99;c.pl.forEach((p,j)=>{if(p.del||u.has(j))return;const q=CP[m.pos[i]].indexOf(p.pos);if(q<0)return;const v=p.ovr-q*3;if(v>bs){bs=v;b=j}});if(b>=0)u.add(b);return b})}
+function fit(c,pos,base){const ok=p=>p&&!p.sus&&!p.inj&&!p.del,u=new Set(),inX=new Set(base.filter(Boolean)),o=[];
  const best=(s,pool)=>{let b=null,bs=-99;pool.forEach(p=>{if(u.has(p)||!ok(p))return;const k=CP[s].indexOf(p.pos);if(k<0)return;const v=eff(p)-k*3;if(v>bs){bs=v;b=p}});return b?{p:b,v:bs}:null};
- FORM[f].forEach((s,i)=>{let m=ok(base[i])&&!u.has(base[i])?base[i]:null;const a=best(s,c.pl.filter(p=>!inX.has(p)));
+ pos.forEach((s,i)=>{let m=ok(base[i])&&!u.has(base[i])?base[i]:null;const a=best(s,c.pl.filter(p=>!inX.has(p)));
   if(m){const mv=eff(m)-Math.max(0,CP[s].indexOf(m.pos))*3;if(a&&a.v-mv>=2)m=a.p}else m=a?a.p:(best(s,c.pl)||{}).p||c.pl.find(p=>ok(p)&&!u.has(p)&&p.pos!='GK');
   if(m){u.add(m);o.push(m)}});return o}
-function lineup(c){if(!c.main)c.main=mkMain(c,pickF(c));c.cf=c.main.f;return fit(c,c.cf,c.main.xi.map(k=>c.pl[k]))}
+function lineup(c){let m=c.main;if(!m)m=c.main=mkMain(c,pickF(c));if(!m.pos)m.pos=FORM[m.f].slice();const z=nZ(m.pos),ix=m.pos.map((p,i)=>i).sort((a,b)=>ORD(m.pos[a],z)-ORD(m.pos[b],z)),pos=ix.map(i=>m.pos[i]);c.cf=labelOf(pos);return fit(c,pos,ix.map(i=>c.pl[m.xi[i]]))}
 function phase(C,used,mm){C.forEach(c=>c.pl.forEach(p=>{if(p.del)return;
  if(!used.has(p)){p.nj=(p.nj||0)+1;if(p.nj>=3&&!p.inj)p.fase='F';return}
  p.nj=0;const q=mm.get(p)||{},f=p.fase||'N',r=Math.random(),con=p.tr=='c',hot=(q.g||q.a)?.15:0;let n;

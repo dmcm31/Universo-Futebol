@@ -20,6 +20,9 @@ git push -u origin main
 ```
 Depois de cada edição, suba de novo (pelo site ou com `git add . && git commit -m "..." && git push`). O GitHub Pages atualiza sozinho.
 
+## Transferências
+Na aba **Elenco** de qualquer clube, clique em **🔁 Transferências** e escolha: Venda, Compra, Empréstimo, Rescisão / fim de contrato, Agente livre, Promoção da base ou Aposentadoria (os termos vêm da sua aba TRANFERS.). Cada operação tem a janela (Verão ou Inverno) e vai para o histórico em **TRANSFERÊNCIAS** (histórico, agentes livres, empréstimos ativos e saldo por clube). Jogadores que saem ficam ocultos no clube de origem e continuam aparecendo nas escalações de partidas antigas.
+
 ## Valor de mercado
 A coluna de valor de mercado da planilha está quebrada (`#REF!`), então o jogo calcula o valor: cresce rápido com o overall, depende da idade (jovens valem mais) e da posição. A fórmula está em `js/config.js` (`valorMercado`). No Editor → Jogadores você pode fixar o valor de um jogador (coluna "Valor").
 
