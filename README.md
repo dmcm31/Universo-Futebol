@@ -20,6 +20,11 @@ git push -u origin main
 ```
 Depois de cada edição, suba de novo (pelo site ou com `git add . && git commit -m "..." && git push`). O GitHub Pages atualiza sozinho.
 
+## Características, posições secundárias e aprovação das escalações
+- **6 características** por jogador (Finalização, Passe, Drible, Defesa, Velocidade, Físico). Em cada posição, 2 são **vitais** (35% do geral cada), 2 **importantes** (15% cada) e 2 **irrelevantes** (0%). A tabela de importância está em `js/config.js` (`POSW`). O geral de um jogador muda conforme a posição em que ele joga.
+- **Posições secundárias:** clique no nome do jogador (Elenco ou Editor → Jogadores → Perfil) para editar características e marcar posições secundárias. Existem as posições MD e ME (meia direita e esquerda). O jogo só escala alguém fora das posições dele se não houver ninguém disponível, e avisa "fora de posição".
+- **Aprovar escalações:** com a opção ligada (cartão no Início), ao simular um jogo abre a tela com as escalações dos dois times, para você trocar jogadores e formação e aprovar.
+
 ## Transferências
 Na aba **Elenco** de qualquer clube, clique em **🔁 Transferências** e escolha: Venda, Compra, Empréstimo, Rescisão / fim de contrato, Agente livre, Promoção da base ou Aposentadoria (os termos vêm da sua aba TRANFERS.). Cada operação tem a janela (Verão ou Inverno) e vai para o histórico em **TRANSFERÊNCIAS** (histórico, agentes livres, empréstimos ativos e saldo por clube). Jogadores que saem ficam ocultos no clube de origem e continuam aparecendo nas escalações de partidas antigas.
 
