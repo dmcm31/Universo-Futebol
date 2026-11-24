@@ -66,3 +66,7 @@ header{display:block;padding:0;margin:0 -12px 16px;background:var(--hd)}.hd1{dis
 .atr{display:flex;align-items:center;gap:8px;margin:7px 0}.atr .lab{width:96px;font-weight:600}.atr .imp{font-size:10px;font-weight:700;border-radius:6px;padding:2px 7px;width:92px;text-align:center}.atr .bar2{flex:1;height:10px;background:var(--bd);border-radius:6px;overflow:hidden}.atr .bar2 i{display:block;height:100%}.atr input{width:62px}
 .pg{display:inline-block;margin:3px;padding:3px 9px;border-radius:8px;background:var(--bg);font-size:13px}.pp1{outline:2px solid var(--ac)}.pp2{outline:1px solid var(--ac)}
 .mdl.w2{max-width:1000px}.pcols{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:820px){.pcols{grid-template-columns:1fr}}
+
+/* campo tático */
+.pitch.one{aspect-ratio:1/1.2;margin-top:0}.pitch.one:before,.pitch.one:after{display:none}.bx1,.bx2{position:absolute;left:24%;right:24%;height:13%;border:2px solid #fff8}.bx1{top:0;border-top:0}.bx2{bottom:0;border-bottom:0}
+.pl{cursor:pointer}.pl.sel .pn{outline:3px solid #ffd60a;outline-offset:2px}.ai{width:52px}

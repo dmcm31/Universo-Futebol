@@ -20,6 +20,11 @@ git push -u origin main
 ```
 Depois de cada edição, suba de novo (pelo site ou com `git add . && git commit -m "..." && git push`). O GitHub Pages atualiza sozinho.
 
+## Campo tático, funções e saves
+- **Campo tático:** no Editor (Formação principal) e na tela de aprovação antes de cada jogo, a escalação é montada num campo. Clique em um jogador para trocar o jogador, a posição da vaga e a **função** dele (por exemplo, Ponta que invade, Regista, Pivô, Falso 9). A função muda quais características pesam na nota do jogador naquela vaga (`ROLES` em `js/config.js`).
+- **Características:** as 6 podem ser editadas no perfil do jogador ou direto na tabela do Editor → Jogadores.
+- **Saves:** botão **💾 SAVES**. Salva em vários slots com nome, carrega, sobrescreve, apaga, baixa como arquivo e importa arquivo. O jogo continua salvando sozinho a cada partida.
+
 ## Características, posições secundárias e aprovação das escalações
 - **6 características** por jogador (Finalização, Passe, Drible, Defesa, Velocidade, Físico). Em cada posição, 2 são **vitais** (35% do geral cada), 2 **importantes** (15% cada) e 2 **irrelevantes** (0%). A tabela de importância está em `js/config.js` (`POSW`). O geral de um jogador muda conforme a posição em que ele joga.
 - **Posições secundárias:** clique no nome do jogador (Elenco ou Editor → Jogadores → Perfil) para editar características e marcar posições secundárias. Existem as posições MD e ME (meia direita e esquerda). O jogo só escala alguém fora das posições dele se não houver ninguém disponível, e avisa "fora de posição".

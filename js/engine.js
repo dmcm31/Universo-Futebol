@@ -1,25 +1,25 @@
 // MOTOR DE SIMULAÇÃO: escalação, formações, partida minuto a minuto, calendário.
 const okp=p=>p&&!p.sus&&!p.inj&&!p.del;
 const ELIG=(p,s)=>p.pos==s||(p.sec||[]).includes(s)?0:(()=>{const k=CP[s].indexOf(p.pos);return k>0?k*3:null})();
-const sco=(p,s)=>{const e=ELIG(p,s);return e==null?null:rt(p,s)-e};
+const sco=(p,s,r)=>{const e=ELIG(p,s);return e==null?null:rt(p,s,r)-e};
 const ADJ={G:[],D:['M'],M:['D','A'],A:['M']};
-function bestFor(c,s,u,pool,fb){let b=null,bs=-99;(pool||c.pl).forEach(p=>{if(u.has(p)||!okp(p))return;let v=sco(p,s);if(v==null){if(!fb)return;const g=G(p.pos),gs=G(s);if((gs=='G')!=(g=='G'))return;const pen=g==gs?8:ADJ[gs].includes(g)?12:null;if(pen==null)return;v=rt(p,s)-pen}if(v>bs){bs=v;b=p}});return b?{p:b,v:bs}:null}
-function auto(c,f){const u=new Set(),o=[];FORM[f].forEach(s=>{const b=bestFor(c,s,u,null,true);if(b){u.add(b.p);b.p._s=s;o.push(b.p)}});return o}
+function bestFor(c,s,u,pool,fb,r){let b=null,bs=-99;(pool||c.pl).forEach(p=>{if(u.has(p)||!okp(p))return;let v=sco(p,s,r);if(v==null){if(!fb)return;const g=G(p.pos),gs=G(s);if((gs=='G')!=(g=='G'))return;const pen=g==gs?8:ADJ[gs].includes(g)?12:null;if(pen==null)return;v=rt(p,s,r)-pen}if(v>bs){bs=v;b=p}});return b?{p:b,v:bs}:null}
+function auto(c,f){const u=new Set(),o=[];FORM[f].forEach(s=>{const b=bestFor(c,s,u,null,true);if(b){u.add(b.p);b.p._s=s;b.p._r=0;o.push(b.p)}});return o}
 const pw=c=>c.pl.filter(p=>!p.del).map(p=>p.ovr).sort((a,b)=>b-a).slice(0,14).reduce((s,x)=>s+x,0)/14,top3=(c,g)=>{const x=c.pl.filter(p=>!p.del&&G(p.pos)==g).map(p=>p.ovr).sort((a,b)=>b-a).slice(0,3);return x.reduce((s,v)=>s+v,0)/(x.length||1)};
-const FM={B:3,N:0,R:-3,F:-2},eff=p=>rt(p,p._s),rt=(p,s)=>ovrAt(p,s||p.pos)+(FM[p.fase]||0);
+const FM={B:3,N:0,R:-3,F:-2},eff=p=>rt(p,p._s,p._r),rt=(p,s,r)=>ovrAt(p,s||p.pos,r)+(FM[p.fase]||0);
 const pickF=c=>{const W={'4-3-3':72,'4-4-2':23,'3-4-3':5};if(top3(c,'A')<top3(c,'M')-4){delete W['4-3-3'];delete W['3-4-3']}return wpick(Object.keys(W),k=>W[k])};
 const ORD=(p,z)=>({GK:0,LD:z?20:10,ZGD:11,ZGE:12,LE:z?24:13,VOL:21,MC:22,MEIA:23,MD:20.2,ME:23.8,PD:30,ATA:31,SA:32,PE:33}[p]);
 const nZ=pos=>pos.filter(p=>p[0]=='Z').length==3&&pos.filter(p=>G(p)=='M').length<=3;
 function labelOf(pos){const z=nZ(pos);let d=0,m=0,a=0;pos.forEach(p=>{if(p=='GK')return;if(p[0]=='Z')d++;else if(p=='LD'||p=='LE')z?m++:d++;else if(G(p)=='M')m++;else a++});return d+'-'+m+'-'+a}
-const mkMain=(c,f)=>({f,pos:FORM[f].slice(),xi:auto(c,f).map(p=>c.pl.indexOf(p))});
-function fixMain(c){const m=c.main,u=new Set(m.xi.map(k=>c.pl[k]).filter(p=>p&&!p.del));m.xi=m.xi.map((k,i)=>{if(c.pl[k]&&!c.pl[k].del)return k;const b=bestFor(c,m.pos[i],u,null,true);if(!b)return -1;u.add(b.p);return c.pl.indexOf(b.p)})}
-function fit(c,pos,base){const u=new Set(),inX=new Set(base.filter(Boolean)),o=[];
- pos.forEach((s,i)=>{let m=okp(base[i])&&!u.has(base[i])?base[i]:null;const a=bestFor(c,s,u,c.pl.filter(p=>!inX.has(p)),false);
-  if(m){const e=sco(m,s),mv=e==null?rt(m,s)-8:e;if(a&&a.v-mv>=2)m=a.p}else m=a?a.p:(bestFor(c,s,u,null,true)||{}).p;
-  if(m){u.add(m);m._s=s;o.push(m)}});return o}
-function lineup(c,ov){let m=ov||c.main;if(!m)m=c.main=mkMain(c,pickF(c));if(!m.pos)m.pos=FORM[m.f].slice();const z=nZ(m.pos),ix=m.pos.map((p,i)=>i).sort((a,b)=>ORD(m.pos[a],z)-ORD(m.pos[b],z)),pos=ix.map(i=>m.pos[i]);c.cf=labelOf(pos);
- if(ov){const o=[];ix.forEach(i=>{const p=c.pl[m.xi[i]];if(p){p._s=m.pos[i];o.push(p)}});return o}return fit(c,pos,ix.map(i=>c.pl[m.xi[i]]))}
-function proposal(c){let m=c.main;if(!m)m=c.main=mkMain(c,pickF(c));if(!m.pos)m.pos=FORM[m.f].slice();const z=nZ(m.pos),ix=m.pos.map((p,i)=>i).sort((a,b)=>ORD(m.pos[a],z)-ORD(m.pos[b],z)),pos=ix.map(i=>m.pos[i]),xi=fit(c,pos,ix.map(i=>c.pl[m.xi[i]])).map(p=>c.pl.indexOf(p));while(xi.length<pos.length)xi.push(-1);return{pos,xi}}
+const mkMain=(c,f)=>({f,pos:FORM[f].slice(),xi:auto(c,f).map(p=>c.pl.indexOf(p)),rl:Array(11).fill(0)});
+function fixMain(c){const m=c.main,u=new Set(m.xi.map(k=>c.pl[k]).filter(p=>p&&!p.del));m.xi=m.xi.map((k,i)=>{if(c.pl[k]&&!c.pl[k].del)return k;const b=bestFor(c,m.pos[i],u,null,true,(m.rl||[])[i]);if(!b)return -1;u.add(b.p);return c.pl.indexOf(b.p)})}
+function fit(c,pos,base,rl){rl=rl||[];const u=new Set(),inX=new Set(base.filter(Boolean)),o=[];
+ pos.forEach((s,i)=>{const r=rl[i]||0;let m=okp(base[i])&&!u.has(base[i])?base[i]:null;const a=bestFor(c,s,u,c.pl.filter(p=>!inX.has(p)),false,r);
+  if(m){const e=sco(m,s,r),mv=e==null?rt(m,s,r)-8:e;if(a&&a.v-mv>=2)m=a.p}else m=a?a.p:(bestFor(c,s,u,null,true,r)||{}).p;
+  if(m){u.add(m);m._s=s;m._r=r;o.push(m)}});return o}
+function lineup(c,ov){let m=ov||c.main;if(!m)m=c.main=mkMain(c,pickF(c));if(!m.pos)m.pos=FORM[m.f].slice();const z=nZ(m.pos),ix=m.pos.map((p,i)=>i).sort((a,b)=>ORD(m.pos[a],z)-ORD(m.pos[b],z)),pos=ix.map(i=>m.pos[i]),rl=ix.map(i=>(m.rl||[])[i]||0);c.cf=labelOf(pos);
+ if(ov){const o=[];ix.forEach(i=>{const p=c.pl[m.xi[i]];if(p){p._s=m.pos[i];p._r=(m.rl||[])[i]||0;o.push(p)}});return o}return fit(c,pos,ix.map(i=>c.pl[m.xi[i]]),rl)}
+function proposal(c){let m=c.main;if(!m)m=c.main=mkMain(c,pickF(c));if(!m.pos)m.pos=FORM[m.f].slice();const z=nZ(m.pos),ix=m.pos.map((p,i)=>i).sort((a,b)=>ORD(m.pos[a],z)-ORD(m.pos[b],z)),pos=ix.map(i=>m.pos[i]),rl=ix.map(i=>(m.rl||[])[i]||0),xi=fit(c,pos,ix.map(i=>c.pl[m.xi[i]]),rl).map(p=>c.pl.indexOf(p));while(xi.length<pos.length)xi.push(-1);return{pos,xi,rl}}
 function phase(C,used,mm){C.forEach(c=>c.pl.forEach(p=>{if(p.del)return;
  if(!used.has(p)){p.nj=(p.nj||0)+1;if(p.nj>=3&&!p.inj)p.fase='F';return}
  p.nj=0;const q=mm.get(p)||{},f=p.fase||'N',r=Math.random(),con=p.tr=='c',hot=(q.g||q.a)?.15:0;let n;
@@ -49,7 +49,7 @@ function sim(H,A,ov){
    else add(t,pick([`${n} arrisca de longe e a bola passa perto do gol.`,`${n} cabeceia para fora.`,`${n} finaliza, mas a zaga bloqueia.`,`${n} chuta por cima do travessão.`]),'',s)}
   if(Math.random()<.04){const i=Math.random()<.5?0:1;card(t,i,wpick(L[i],p=>({G:.1,D:1.3,M:1.2,A:.8}[G(p.pos)]*(yel.get(p)?.2:1))),0)}
   if(Math.random()<.0005){const i=Math.random()<.5?0:1;card(t,i,wpick(L[i],p=>({G:.2,D:1.3,M:1,A:.7}[G(p.pos)])),1)}
-  const sw=(i,t,p,w)=>{if(nsub[i]>=3)return false;const b=C[i].pl.filter(x=>!used.has(x)&&!x.sus&&!x.inj&&!x.del&&G(x.pos)==G(p._s||p.pos)).sort((a,b)=>rt(b,p._s)-rt(a,p._s))[0];if(!b)return false;used.add(b);nsub[i]++;b._s=p._s;M(b).in=t;M(p).out=t;L[i]=L[i].map(x=>x==p?b:x);add(t,`🔁 ${C[i].n}: sai ${sn(p)}, entra ${sn(b)}${w?' (lesão)':''}.`,'',i);return true};
+  const sw=(i,t,p,w)=>{if(nsub[i]>=3)return false;const b=C[i].pl.filter(x=>!used.has(x)&&!x.sus&&!x.inj&&!x.del&&G(x.pos)==G(p._s||p.pos)).sort((a,b)=>rt(b,p._s,p._r)-rt(a,p._s,p._r))[0];if(!b)return false;used.add(b);nsub[i]++;b._s=p._s;b._r=p._r;M(b).in=t;M(p).out=t;L[i]=L[i].map(x=>x==p?b:x);add(t,`🔁 ${C[i].n}: sai ${sn(p)}, entra ${sn(b)}${w?' (lesão)':''}.`,'',i);return true};
   if(plan[0].includes(t)||plan[1].includes(t))[0,1].forEach(i=>{if(!plan[i].includes(t))return;const c=L[i].filter(x=>G(x.pos)!='G').sort(()=>Math.random()-.5);for(const p of c)if(sw(i,t,p,0))break});
   if(Math.random()<.0008){const i=Math.random()<.5?0:1,p=pick(L[i].filter(x=>G(x.pos)!='G'));if(p){hurt.push(p);M(p).i=1;M(p).out=t;add(t,`🚑 ${sn(p)} (${C[i].n}) sente e precisa sair, lesionado.`,'c',i);if(!sw(i,t,p,1))L[i]=L[i].filter(x=>x!=p)}}
   if(t==45)add(45,`Intervalo: ${C[0].n} ${sc[0]} x ${sc[1]} ${C[1].n}`,'i');
