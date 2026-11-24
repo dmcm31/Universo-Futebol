@@ -3,13 +3,15 @@ const $=q=>document.querySelector(q),rnd=(a,b)=>a+Math.random()*(b-a),pick=a=>a[
 const G=p=>({GK:'G',LE:'D',LD:'D',ZGE:'D',ZGD:'D',VOL:'M',MC:'M',MEIA:'M',MD:'M',ME:'M'}[p]||'A');
 const FORM={'4-3-3':['GK','LD','ZGD','ZGE','LE','VOL','MC','MEIA','PD','ATA','PE'],'3-4-3':['GK','ZGD','ZGE','ZGD','LD','VOL','MEIA','LE','PD','ATA','PE'],'4-4-2':['GK','LD','ZGD','ZGE','LE','MD','MC','MC','ME','ATA','SA'],'4-5-1':['GK','LD','ZGD','ZGE','LE','MD','VOL','MC','MEIA','ME','ATA'],'5-4-1':['GK','LD','ZGD','ZGE','ZGD','LE','MD','VOL','MC','ME','ATA']};
 const CP={LD:['LD','LE'],LE:['LE','LD'],ZGD:['ZGD','ZGE'],ZGE:['ZGE','ZGD'],MD:['MD','ME'],ME:['ME','MD'],PD:['PD','PE'],PE:['PE','PD'],VOL:['VOL'],MC:['MC'],MEIA:['MEIA'],ATA:['ATA'],SA:['SA'],GK:['GK']}; // trocas automáticas permitidas (lado direito/esquerdo); o resto depende das posições secundárias
-const CLUBN=new Set(DATA.map(c=>c.n)),tc=s=>CLUBN.has(s)?s:s.toLowerCase().replace(/(^|[\s'-])\S/g,m=>m.toUpperCase()),sn=p=>tc(p.name.split(' ').pop());
+const CLUBN=new Set(DATA.map(c=>c.n)),tc=s=>CLUBN.has(s)?s:s.toLowerCase().replace(/(^|[\s'-])\S/g,m=>m.toUpperCase()),sn=p=>'<b>'+nmP(p.name).s+'</b>';
 const LGC={ING:'#BF9000',ITA:'#1155CC'};
 const LG={ING:'Golden League Vision (Inglaterra)',ITA:'Superlegea Calcio (Itália)'};
 let S=null,nav={p:'home'},H=[],timer=null;
 const cl=n=>S.clubs.find(c=>c.n==n),ci=n=>S.clubs.findIndex(c=>c.n==n);
-const load=()=>{try{const j=localStorage.getItem('fut3536f');return j?JSON.parse(j):null}catch(e){return null}};
-const save=()=>{try{localStorage.setItem('fut3536d',JSON.stringify(S))}catch(e){}};
+// Chave única do salvamento automático. Se mudar o nome, mude só aqui.
+const SAVEKEY='fut3536f',OLDKEY='fut3536d';
+const load=()=>{try{const j=localStorage.getItem(SAVEKEY)||localStorage.getItem(OLDKEY);return j?JSON.parse(j):null}catch(e){return null}};
+const save=()=>{try{localStorage.setItem(SAVEKEY,JSON.stringify(S))}catch(e){}};
 
 // BANDEIRAS: nome do país (como está em data/jogadores.js) -> código do site flagcdn.com
 const ISO={"ITÁLIA": "it", "INGLATERRA": "gb-eng", "FRANÇA": "fr", "ESPANHA": "es", "BÉLGICA": "be", "BRASIL": "br", "PAÍSES BAIXOS": "nl", "ESCÓCIA": "gb-sct", "IRLANDA": "ie", "MARROCOS": "ma", "ARGENTINA": "ar", "ALEMANHA": "de", "SUÍÇA": "ch", "NIGÉRIA": "ng", "PAÍS DE GALES": "gb-wls", "PORTUGAL": "pt", "CROÁCIA": "hr", "POLÔNIA": "pl", "GANA": "gh", "REP. CONGO": "cd", "SÉRVIA": "rs", "URUGUAI": "uy", "SENEGAL": "sn", "HUNGRIA": "hu", "COSTA DO MARFIM": "ci", "TURQUIA": "tr", "ÁFRICA DO SUL": "za", "ALBÂNIA": "al", "MONTENEGRO": "me", "BENIM": "bj", "DINAMARCA": "dk", "CHÉQUIA": "cz", "CAMARÕES": "cm", "ESLOVÁQUIA": "sk", "JAPÃO": "jp", "NORUEGA": "no", "UCRÂNIA": "ua", "MALI": "ml", "SUÉCIA": "se", "COLÔMBIA": "co", "FINLÂNDIA": "fi", "ÁUSTRIA": "at", "MACEDÔNIA": "mk", "ESLOVÉNIA": "si", "GUINÉ": "gn", "EQUADOR": "ec", "ESTADOS UNIDOS": "us", "TUNÍSIA": "tn", "AUSTRÁLIA": "au", "GRÉCIA": "gr", "GÂMBIA": "gm", "CHILE": "cl", "SURINAME": "sr", "RÚSSIA": "ru", "ANGOLA": "ao", "PARAGUAI": "py", "BÓSNIA HERZEGOVINA": "ba", "ARGÉLIA": "dz", "BURQUINA FASSO": "bf", "IRLANDA DO NORTE": "gb-nir", "GABÃO": "ga", "KOSOVO": "xk", "LIBÉRIA": "lr", "TANZÂNIA": "tz", "TOGO": "tg", "PERU": "pe", "QUÉNIA": "ke", "CORÉIA DO SUL": "kr", "BULGÁRIA": "bg", "ROMÉNIA": "ro", "LITUÂNIA": "lt", "CABO VERDE": "cv", "CONGO": "cg", "CANADÁ": "ca", "JAMAICA": "jm", "IRÃ": "ir", "UZBEQUISTÃO": "uz", "ISLÂNDIA": "is", "BOLÍVIA": "bo", "MÉXICO": "mx", "MOLDÁVIA": "md", "UGANDA": "ug", "ISRAEL": "il", "GEÓRGIA": "ge", "COSTA RICA": "cr", "EGITO": "eg", "ZÂMBIA": "zm", "VENEZUELA": "ve", "NICARÁGUA": "ni", "GUINÉ BISSAU": "gw", "ARÁBIA SAUDITA": "sa"};
@@ -31,8 +33,31 @@ const ATTR=[['FIN','Finalização'],['PAS','Passe'],['DRI','Drible'],['DEF','Def
 const POSW={GK:{v:[3,5],m:[1,4]},ZGD:{v:[3,5],m:[4,1]},ZGE:{v:[3,5],m:[4,1]},LD:{v:[4,3],m:[1,5]},LE:{v:[4,3],m:[1,5]},VOL:{v:[3,1],m:[5,4]},MC:{v:[1,5],m:[3,2]},MEIA:{v:[1,2],m:[0,4]},MD:{v:[4,1],m:[2,3]},ME:{v:[4,1],m:[2,3]},PD:{v:[4,2],m:[0,1]},PE:{v:[4,2],m:[0,1]},ATA:{v:[0,5],m:[2,4]},SA:{v:[0,2],m:[1,4]}};
 // Posições secundárias iniciais (você muda no perfil de cada jogador)
 const SECD={PD:['MD'],PE:['ME'],MC:['VOL','MEIA'],MEIA:['MC'],VOL:['MC'],ATA:['SA'],SA:['ATA'],ZGD:[],ZGE:[],LD:[],LE:[],GK:[],MD:['PD'],ME:['PE']};
-function ovrAt(p,pos){const w=POSW[pos]||POSW[p.pos]||POSW.MC,a=p.at;if(!a)return p.ovr;return Math.round(.35*(a[w.v[0]]+a[w.v[1]])+.15*(a[w.m[0]]+a[w.m[1]]))}
+// FUNÇÕES: cada posição tem funções diferentes. A primeira de cada lista é a padrão (usa os pesos de POSW).
+// Formato: [nome, vitais, importantes] com índices de ATTR (0 FIN, 1 PAS, 2 DRI, 3 DEF, 4 VEL, 5 FIS).
+const ROLES={GK:[['Goleiro tradicional'],['Goleiro líbero',[3,1],[5,4]]],
+ZGD:[['Zagueiro'],['Zagueiro que sai jogando',[3,1],[5,2]],['Zagueiro de cobertura',[3,4],[5,1]]],ZGE:[['Zagueiro'],['Zagueiro que sai jogando',[3,1],[5,2]],['Zagueiro de cobertura',[3,4],[5,1]]],
+LD:[['Lateral'],['Lateral defensivo',[3,5],[4,1]],['Lateral apoiador',[4,1],[2,3]],['Ala ofensivo',[4,2],[1,0]]],LE:[['Lateral'],['Lateral defensivo',[3,5],[4,1]],['Lateral apoiador',[4,1],[2,3]],['Ala ofensivo',[4,2],[1,0]]],
+VOL:[['Volante'],['Volante de contenção',[3,5],[1,4]],['Regista',[1,2],[3,5]]],MC:[['Meia central'],['Meia de ligação (box-to-box)',[5,4],[1,3]],['Organizador',[1,2],[3,5]]],
+MEIA:[['Armador'],['Meia atacante',[0,2],[1,4]],['Meia de movimentação',[2,4],[1,0]]],MD:[['Meia lateral'],['Meia ofensivo',[2,4],[0,1]],['Meia de apoio',[1,3],[4,5]]],ME:[['Meia lateral'],['Meia ofensivo',[2,4],[0,1]],['Meia de apoio',[1,3],[4,5]]],
+PD:[['Ponta'],['Ponta que invade',[0,4],[2,1]],['Ponta criador',[1,2],[4,0]]],PE:[['Ponta'],['Ponta que invade',[0,4],[2,1]],['Ponta criador',[1,2],[4,0]]],
+ATA:[['Centroavante'],['Pivô',[5,1],[0,2]],['Atacante móvel',[4,0],[2,1]]],SA:[['Segundo atacante'],['Falso 9',[1,2],[0,4]],['Atacante de apoio',[1,0],[2,5]]]};
+const roleW=(pos,ro)=>{const r=(ROLES[pos]||[])[ro||0];return r&&r[1]?{v:r[1],m:r[2]}:POSW[pos]};
+function ovrAt(p,pos,ro){const w=roleW(pos,ro)||POSW[p.pos]||POSW.MC,a=p.at;if(!a)return p.ovr;return Math.round(.35*(a[w.v[0]]+a[w.v[1]])+.15*(a[w.m[0]]+a[w.m[1]]))}
 function genAttrs(p){let s=0;for(const ch of p.name)s=(s*31+ch.charCodeAt(0))>>>0;const r=()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296},w=POSW[p.pos]||POSW.MC,o=p.ovr,a=[0,0,0,0,0,0],cl=x=>Math.max(15,Math.min(99,Math.round(x)));
  [0,1,2,3,4,5].filter(i=>!w.v.includes(i)&&!w.m.includes(i)).forEach(i=>a[i]=cl(o-18+(r()-.5)*16));w.m.forEach(i=>a[i]=cl(o-4+(r()-.5)*12));
  const x=(o-.15*(a[w.m[0]]+a[w.m[1]]))/.7,d=(r()-.5)*8;a[w.v[0]]=cl(x+d);a[w.v[1]]=cl(x-d);return a}
 function ensureAttrs(p){if(!p.at)p.at=genAttrs(p);if(!p.sec)p.sec=(SECD[p.pos]||[]).slice()}
+
+// ===== NOMES =====
+// Jogador: primeiro nome com inicial maiúscula e o resto minúsculo; sobrenome em MAIÚSCULAS e negrito.
+const nmP=n=>{const t=String(n||'').trim().split(/\s+/),cap=s=>s.toLowerCase().replace(/(^|[-'])([a-zà-ÿ])/g,(m,a,b)=>a+b.toUpperCase());return t.length<2?{f:'',s:t[0].toUpperCase()}:{f:cap(t[0]),s:t.slice(1).join(' ').toUpperCase()}};
+const PN=n=>{const x=nmP(n);return(x.f?x.f+' ':'')+'<b>'+x.s+'</b>'},PNT=n=>{const x=nmP(n);return(x.f?x.f+' ':'')+x.s};
+// Clube: apelido = nome sem siglas (FC, AFC, AC, AS, SC, SS, UC, US, CF, CALCIO) no começo ou no fim. Editável no Editor.
+const AP_STOP=new Set(['AC','AS','FC','AFC','SC','SS','UC','US','CF','CALCIO']);
+const autoAp=n=>{const t=String(n).split(' ');while(t.length>1&&AP_STOP.has(t[0]))t.shift();while(t.length>1&&AP_STOP.has(t[t.length-1]))t.pop();return t.join(' ')};
+const ESCS=typeof ESC!=='undefined'?ESC:{};
+// ===== INSTRUÇÕES =====
+const TIL=[['men','Mentalidade',['Muito defensiva','Defensiva','Equilibrada','Ofensiva','Muito ofensiva']],['lin','Linha defensiva',['Baixa','Média','Alta']],['pre','Pressão',['Baixa','Média','Alta']],['rit','Ritmo',['Lento','Normal','Rápido']],['pas','Estilo de passe',['Curto','Misto','Direto']],['lar','Largura',['Estreito','Normal','Aberto']]];
+const DTI={men:2,lin:1,pre:1,rit:1,pas:1,lar:1};
+const PIN=[['chute','Finalizar mais'],['dri','Driblar mais'],['pas','Passes arriscados'],['marc','Marcar de perto'],['avan','Avançar mais'],['recu','Ficar mais atrás']];
