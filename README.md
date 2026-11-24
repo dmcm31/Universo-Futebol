@@ -20,6 +20,12 @@ git push -u origin main
 ```
 Depois de cada edição, suba de novo (pelo site ou com `git add . && git commit -m "..." && git push`). O GitHub Pages atualiza sozinho.
 
+## Instruções, escudos, nomes e refazer partida
+- **Instruções da equipe** (Editor → Formação principal e na aprovação pré-jogo): Mentalidade, Linha defensiva, Pressão, Ritmo, Estilo de passe e Largura. **Instruções do jogador**: Finalizar mais, Driblar mais, Passes arriscados, Marcar de perto, Avançar mais, Ficar mais atrás. Os efeitos estão em `js/engine.js` (função `sim`).
+- **Escudos:** coloque o arquivo em `img/escudos/` e informe o caminho no Editor → Clubes (coluna Escudo) ou em `data/clubes.js` (`ESC`). Sem arquivo, o jogo gera um escudo provisório com as cores do clube. O escudo do AC Milano já está em `img/escudos/ac-milano.svg`.
+- **Nomes:** jogador em "Primeiro SOBRENOME" (sobrenome em negrito). Clube com opção de **apelido** (cartão no Início) ou nome completo; o apelido é editável no Editor → Clubes.
+- **Refazer partida:** depois de jogar, o botão ↺ aparece na tela da partida e no Início. Desfaz a última partida e reabre a escolha de escalações. Só vale para a última partida e não sobrevive a fechar a página.
+
 ## Campo tático, funções e saves
 - **Campo tático:** no Editor (Formação principal) e na tela de aprovação antes de cada jogo, a escalação é montada num campo. Clique em um jogador para trocar o jogador, a posição da vaga e a **função** dele (por exemplo, Ponta que invade, Regista, Pivô, Falso 9). A função muda quais características pesam na nota do jogador naquela vaga (`ROLES` em `js/config.js`).
 - **Características:** as 6 podem ser editadas no perfil do jogador ou direto na tabela do Editor → Jogadores.
