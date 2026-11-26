@@ -20,6 +20,9 @@ git push -u origin main
 ```
 Depois de cada edição, suba de novo (pelo site ou com `git add . && git commit -m "..." && git push`). O GitHub Pages atualiza sozinho.
 
+## Layout
+Painel escuro com menu lateral de ícones (o botão ☰ expande os nomes), busca de clubes e jogadores no topo e botão de tema claro/escuro. Cores base em `css/style.css` (bloco `TEMA ESCURO / ESTILO PAINEL`). No Início: indicadores, colunas de jogos da rodada por liga, resultados recentes e botão **▶ Próximo jogo**.
+
 ## Instruções, escudos, nomes e refazer partida
 - **Instruções da equipe** (Editor → Formação principal e na aprovação pré-jogo): Mentalidade, Linha defensiva, Pressão, Ritmo, Estilo de passe e Largura. **Instruções do jogador**: Finalizar mais, Driblar mais, Passes arriscados, Marcar de perto, Avançar mais, Ficar mais atrás. Os efeitos estão em `js/engine.js` (função `sim`).
 - **Escudos:** coloque o arquivo em `img/escudos/` e informe o caminho no Editor → Clubes (coluna Escudo) ou em `data/clubes.js` (`ESC`). Sem arquivo, o jogo gera um escudo provisório com as cores do clube. O escudo do AC Milano já está em `img/escudos/ac-milano.svg`.
